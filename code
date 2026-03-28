@@ -1,0 +1,155 @@
+# Bank Management System
+
+accounts = {}
+
+# Create Account
+def create_account():
+    acc_no = input("Enter Account Number: ")
+
+    if acc_no in accounts:
+        print("Account Number already exists!")
+        return
+
+    name = input("Enter Name: ")
+
+    print("Select Account Type:")
+    print("1. Saving Account")
+    print("2. Current Account")
+    choice = input("Enter choice: ")
+
+    if choice == '1':
+        acc_type = "saving"
+        min_balance = 500
+    elif choice == '2':
+        acc_type = "current"
+        min_balance = 1000
+    else:
+        print("Invalid account type!")
+        return
+
+    balance = float(input("Enter Initial Deposit: "))
+
+    if balance < min_balance:
+        print(f"Minimum balance for {acc_type} account is {min_balance}")
+        return
+
+    accounts[acc_no] = {
+        "name": name,
+        "balance": balance,
+        "type": acc_type
+    }
+
+    print("Account Created Successfully!")
+
+
+# Deposit
+def deposit():
+    acc_no = input("Enter Account Number: ")
+
+    if acc_no not in accounts:
+        print("Account not found!")
+        return
+
+    amount = float(input("Enter Amount to Deposit: "))
+
+    if amount <= 0:
+        print("Invalid amount!")
+        return
+
+    accounts[acc_no]["balance"] += amount
+    print("Deposit Successful!")
+
+
+# Withdraw
+def withdraw():
+    acc_no = input("Enter Account Number: ")
+
+    if acc_no not in accounts:
+        print("Account not found!")
+        return
+
+    amount = float(input("Enter Amount to Withdraw: "))
+
+    if amount <= 0:
+        print("Invalid amount!")
+        return
+
+    acc_type = accounts[acc_no]["type"]
+
+    # Minimum balance rule
+    if acc_type == "saving":
+        min_balance = 500
+    else:
+        min_balance = 1000
+
+    if accounts[acc_no]["balance"] - amount < min_balance:
+        print(f"Cannot withdraw! Minimum balance of {min_balance} must be maintained.")
+    else:
+        accounts[acc_no]["balance"] -= amount
+        print("Withdrawal Successful!")
+
+
+# Check Balance
+def check_balance():
+    acc_no = input("Enter Account Number: ")
+
+    if acc_no not in accounts:
+        print("Account not found!")
+        return
+
+    print("Account Holder:", accounts[acc_no]["name"])
+    print("Account Type:", accounts[acc_no]["type"])
+    print("Balance:", accounts[acc_no]["balance"])
+
+
+# Display All Accounts
+def display_all():
+    if not accounts:
+        print("No accounts available.")
+        return
+
+    print("All Accounts:")
+    for acc_no, details in accounts.items():
+        print(f"Acc No: {acc_no}, Name: {details['name']}, Type: {details['type']}, Balance: {details['balance']}")
+
+
+# Add Interest (Saving Account only)
+def add_interest():
+    for acc_no, details in accounts.items():
+        if details["type"] == "saving":
+            interest = details["balance"] * (7.25 / 100)
+            details["balance"] += interest
+
+    print("Interest added to all saving accounts!")
+
+
+# Main Menu
+while True:
+    print("\n---- Bank Management System ----")
+    print("1. Create Account")
+    print("2. Deposit")
+    print("3. Withdraw")
+    print("4. Check Balance")
+    print("5. Display All Accounts")
+    print("6. Add Interest (Saving Account)")
+    print("7. Exit")
+
+    choice = input("Enter your choice: ")
+
+    if choice == '1':
+        create_account()
+    elif choice == '2':
+        deposit()
+    elif choice == '3':
+        withdraw()
+    elif choice == '4':
+        check_balance()
+    elif choice == '5':
+        display_all()
+    elif choice == '6':
+        add_interest()
+    elif choice == '7':
+        print("Exiting...")
+        break
+    else:
+        print("Invalid choice! Try again.")
